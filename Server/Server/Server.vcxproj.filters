@@ -14,9 +14,16 @@
     <ClInclude Include="..\..\arSocket.h">
       <Filter>_arSocket</Filter>
     </ClInclude>
+    <ClInclude Include="ChattingRoom.h" />
+    <ClInclude Include="ChattingServer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ChattingRoom.cpp" />
+    <ClCompile Include="ChattingServer.cpp" />
+    <ClCompile Include="..\..\arSocket.cpp">
+      <Filter>_arSocket</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

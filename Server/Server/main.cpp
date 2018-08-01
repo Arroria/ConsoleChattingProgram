@@ -1,5 +1,7 @@
 #include "stdafx.h"
-#include "../../arSocket.h"
+
+#include "ChattingRoom.h"
+
 
 
 SOCKET g_socket;
@@ -33,14 +35,17 @@ void main()
 
 
 
-	SOCKET clientSocket;
-	sockaddr_in clientAddress;
-	if (__ar_accept(&socErr, g_socket, &clientSocket, (sockaddr*)&clientAddress))
-		ErrorReturn(socErr, "listen()");
+	ChattingRoom chattingRoom;
+	while (true)
+	{
+		User user;
+		SOCKET& clientSocket = user.socket;
+		sockaddr_in& clientAddress = user.address;
+		if (__ar_accept(&socErr, g_socket, &clientSocket, (sockaddr*)&clientAddress))
+			ErrorReturn(socErr, "listen()");
 
-	char message[] = "Hello, world!";
-	send(clientSocket, message, strlen(message), NULL);
-
+		chattingRoom.Join(user);
+	}
 
 
 	closesocket(g_socket);
