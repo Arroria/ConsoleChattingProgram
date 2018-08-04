@@ -20,7 +20,14 @@ void ChatRoomParticipant::RecvLoop(ChatRoom * chatRoom, ChatRoomParticipant * us
 		if (recvResult > 0)
 		{
 			buffer[recvResult] = NULL;
-			chatRoom->Broadcast(*userData, buffer, recvResult);
+			cout << "Log : Message : " << buffer << endl;
+			if (std::string("-q") == buffer ||
+				std::string("-Q") == buffer)
+			{
+				send(user.socket, "-q", 2, NULL);
+			}
+			else
+				chatRoom->Broadcast(*userData, buffer, recvResult);
 		}
 		else
 		{

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "../../arSocket.h"
 
+#include "ChatRoomMessenger.h"
 
 SOCKET g_socket;
 sockaddr_in g_serverAddress;
@@ -29,16 +30,24 @@ void main()
 		ErrorReturn(socErr, "connect()");
 
 
-
+	ChatRoomMessenger crmng;
+	crmng.ConnectRoom(g_socket, g_serverAddress);
 	while (true)
 	{
 		char buffer[1<<16];
 		cin.getline(buffer, sizeof(buffer));
-		send(g_socket, buffer, strlen(buffer), NULL);
+		if (std::string("-q") == buffer)
+		{
+			crmng.DisconnectRoom();
+			break;
+		}
+		else
+			crmng.Send(buffer, strlen(buffer));
 	}
 
 
 
+	Sleep(3000);
 
 	closesocket(g_socket);
 	WSACleanup();
