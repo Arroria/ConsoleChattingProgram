@@ -30,9 +30,13 @@ void main()
 
 
 
-	char message[1024];
-	message[recv(g_socket, message, sizeof(message), NULL)] = NULL;
-	cout << message << endl;
+	while (true)
+	{
+		char buffer[1<<16];
+		cin.getline(buffer, sizeof(buffer));
+		send(g_socket, buffer, strlen(buffer), NULL);
+	}
+
 
 
 

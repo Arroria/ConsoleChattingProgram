@@ -18,5 +18,8 @@
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="..\..\arSocket.cpp">
+      <Filter>_arSocket</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

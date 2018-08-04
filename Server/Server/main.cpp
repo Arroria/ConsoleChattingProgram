@@ -35,7 +35,7 @@ void main()
 
 
 
-	ChattingRoom chattingRoom;
+	ChatRoom chattingRoom;
 	while (true)
 	{
 		User user;

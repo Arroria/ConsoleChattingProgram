@@ -9,35 +9,45 @@ struct User
 	SOCKET socket;
 	sockaddr_in address;
 
-	bool operator==(const User& ant)
+	bool operator==(const User& ant) const
 	{
-		return 
-			address.sin_port == ant.address.sin_port &&
-			memcmp(&address.sin_addr, &ant.address.sin_addr, sizeof(in_addr));
+		return
+			//	address.sin_port == ant.address.sin_port &&
+			//	memcmp(&address.sin_addr, &ant.address.sin_addr, sizeof(in_addr));
+			socket == ant.socket;
 	}
 };
 
-class ChattingRoom
+
+class ChatRoom;
+struct ChatRoomParticipant
 {
 public:
-	ChattingRoom();
-	~ChattingRoom();
+	User m_user;
+	std::thread m_recvLoop;
+
+public:
+	static void RecvLoop(ChatRoom* chatRoom, ChatRoomParticipant* userData);
+
+public:
+	bool operator==(const ChatRoomParticipant& ant) const { return m_user == ant.m_user; }
+};
+
+
+class ChatRoom
+{
+public:
+	ChatRoom();
+	~ChatRoom();
 
 
 public:
 	bool Join(User newUser);
+	void Quit(const ChatRoomParticipant& user);
+	void Broadcast(const ChatRoomParticipant& broadcaster, const char* message, int msgLength);
 
 private:
-	void Broadcast(std::list<User>::iterator broadcaster, const char* message, int msgLength);
-
-	void RecvLoop(std::list<User>::iterator userIter, std::list<std::thread>::iterator threadIter);
-	static void stt_RecvLoop(ChattingRoom* _this, void* userIter, void* threadIter) { _this->RecvLoop(*(std::list<User>::iterator*)userIter, *(std::list<std::thread>::iterator*)threadIter); }
-
-private:
-	std::list<User> m_userList;
-	std::list<std::thread> m_thread;
-
+	std::list<ChatRoomParticipant> m_userList;
 	std::mutex m_userListMutex;
-	std::mutex m_threadMutex;
 };
 

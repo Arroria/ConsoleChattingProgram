@@ -1,6 +1,6 @@
 #pragma once
 #include <list>
-class ChattingRoom;
+class ChatRoom;
 
 class ChattingServer
 {
