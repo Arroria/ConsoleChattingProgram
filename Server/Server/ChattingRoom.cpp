@@ -54,10 +54,12 @@ ChatRoom::~ChatRoom()
 
 
 
-bool ChatRoom::Join(User newUser)
+int ChatRoom::Join(User newUser)
 {
+	int userCount = -1;
 	m_userListMutex.lock();
 	m_userList.push_back(ChatRoomParticipant());
+	userCount = m_userList.size();
 	m_userListMutex.unlock();
 
 	ChatRoomParticipant& participant = *(--m_userList.end());
@@ -67,11 +69,13 @@ bool ChatRoom::Join(User newUser)
 	g_coutMutex.lock();
 	cout << "Client connected : " << inet_ntoa(participant.m_user.address.sin_addr) << ':' << ntohs(participant.m_user.address.sin_port) << endl;
 	g_coutMutex.unlock();
-	return false;
+
+	return userCount;
 }
 
-void ChatRoom::Quit(const ChatRoomParticipant & participant)
+int ChatRoom::Quit(const ChatRoomParticipant & participant)
 {
+	int userCount = -1;
 	m_userListMutex.lock();
 	for (auto iter = m_userList.begin(); iter != m_userList.end(); iter++)
 	{
@@ -82,11 +86,14 @@ void ChatRoom::Quit(const ChatRoomParticipant & participant)
 			break;
 		}
 	}
+	userCount = m_userList.size();
 	m_userListMutex.unlock();
 
 	g_coutMutex.lock();
 	cout << "Client disconnected : " << inet_ntoa(participant.m_user.address.sin_addr) << ':' << ntohs(participant.m_user.address.sin_port) << endl;
 	g_coutMutex.unlock();
+
+	return userCount;
 }
 
 void ChatRoom::Broadcast(const ChatRoomParticipant& broadcaster, const char * message, int msgLength)

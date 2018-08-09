@@ -192,3 +192,45 @@ bool __ar_connect(SocketError* errorReturn, SOCKET sock, const sockaddr* socketA
 	return false;
 }
 
+
+
+SocketBuffer::SocketBuffer() : m_dataLength(0), m_buffer{ NULL } {}
+SocketBuffer::SocketBuffer(const char * data, Length dataLength)
+{
+	SetDataLength(dataLength);
+	memcpy(m_buffer, data, dataLength);
+}
+
+inline void SocketBuffer::SetDataLength(Length dataLength) { m_dataLength = hton(dataLength + lengthSize); }
+inline char* SocketBuffer::Buffer() { return m_buffer; }
+inline char& SocketBuffer::operator[](Length index) { return m_buffer[index]; }
+
+inline SocketBuffer::Length SocketBuffer::GetDataLength() const { return ntoh(m_dataLength) - lengthSize; }
+const char * SocketBuffer::Buffer() const { return m_buffer; }
+const char & SocketBuffer::operator[](Length index) const { return m_buffer[index]; }
+
+
+
+int __ar_send(SOCKET socket, const SocketBuffer& socketBuffer, int flags)
+{
+	return send(socket, (char*)&socketBuffer, SocketBuffer::ntoh(socketBuffer.m_dataLength), flags);
+}
+
+int __ar_recv(SOCKET socket, SocketBuffer& socketBuffer, int flags)
+{
+	int result = NULL;
+
+	if ((result = recv(socket, (char*)&socketBuffer, SocketBuffer::lengthSize, flags)) <= 0)
+		return result;
+
+	const SocketBuffer::Length dataSize = socketBuffer.GetDataLength();
+	SocketBuffer::Length recvedSize = 0;
+	while (dataSize > recvedSize)
+	{
+		if ((result = recv(socket, &socketBuffer[recvedSize], dataSize - recvedSize, flags)) > 0)
+			recvedSize += result;
+		else
+			return result;
+	}
+	return recvedSize;
+}

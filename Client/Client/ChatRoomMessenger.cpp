@@ -18,18 +18,28 @@ bool ChatRoomMessenger::ConnectRoom(SOCKET serverSocket, const sockaddr_in & ser
 	return false;
 }
 
-bool ChatRoomMessenger::Send(const char * message, int msgLength)
+bool ChatRoomMessenger::Send(const SocketBuffer& sockBuff)
 {
-	send(m_serverSocket, message, msgLength, NULL);
+	__ar_send(m_serverSocket, sockBuff, NULL);
 	return false;
 }
 
 bool ChatRoomMessenger::DisconnectRoom()
 {
 	m_recvLoop.detach();
-	Send("-q", 2);
+	Send(SocketBuffer("-q", 2));
 	return false;
 }
+
+void ChatRoomMessenger::DrawMessageList()
+{
+	gotoxy(0, 11);
+	m_msgListMutex.lock();
+	for (auto& message : m_messageList)
+		cout << message << endl;
+	m_msgListMutex.unlock();
+}
+
 
 void ChatRoomMessenger::RecvLoop(ChatRoomMessenger* _this)
 {
@@ -43,7 +53,13 @@ void ChatRoomMessenger::RecvLoop(ChatRoomMessenger* _this)
 			if (std::string("-q") == buffer)
 				break;
 			else
-				cout << buffer << endl;
+			{
+				_this->m_msgListMutex.lock();
+				_this->m_messageList.push_back(buffer);
+				while (_this->m_messageList.size() > 10)
+					_this->m_messageList.pop_front();
+				_this->m_msgListMutex.unlock();
+			}
 		}
 		else
 			break;

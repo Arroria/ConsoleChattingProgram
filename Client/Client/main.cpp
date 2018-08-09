@@ -24,25 +24,30 @@ void main()
 	if (__ar_socket(&socErr, AF_INET, SOCK_STREAM, NULL, &g_socket))
 		ErrorReturn(socErr, "socket()");
 
-	__ar_make_sockaddrin(AF_INET, inet_addr("222.108.204.70"), htons(8888), &g_serverAddress);
+	__ar_make_sockaddrin(AF_INET, inet_addr("222.108.204.37"), htons(8888), &g_serverAddress);
 
 	if (__ar_connect(&socErr, g_socket, (sockaddr*)&g_serverAddress))
 		ErrorReturn(socErr, "connect()");
 
 
+
+	cout << "Room Number : ";
 	ChatRoomMessenger crmng;
 	crmng.ConnectRoom(g_socket, g_serverAddress);
 	while (true)
 	{
-		char buffer[1<<16];
-		cin.getline(buffer, sizeof(buffer));
-		if (std::string("-q") == buffer)
+		SocketBuffer buffer;
+		cin.getline(buffer.Buffer(), buffer.bufferSize);
+		if (std::string("-q") == buffer.Buffer())
 		{
 			crmng.DisconnectRoom();
 			break;
 		}
-		else
-			crmng.Send(buffer, strlen(buffer));
+		
+		crmng.Send(buffer, strlen(buffer));
+		system("cls");
+		crmng.DrawMessageList();
+		gotoxy(0, 11);
 	}
 
 

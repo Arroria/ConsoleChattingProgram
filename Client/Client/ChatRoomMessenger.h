@@ -1,7 +1,10 @@
 #pragma once
 #include <thread>
+#include <mutex>
 #include "../../arSocket.h"
 
+#include <list>
+#include <string>
 
 class ChatRoomMessenger
 {
@@ -11,8 +14,10 @@ public:
 
 public:
 	bool ConnectRoom(SOCKET serverSocket, const sockaddr_in& serverAddress);
-	bool Send(const char* message, int msgLength);
+	bool Send(const SocketBuffer& sockBuff);
 	bool DisconnectRoom();
+
+	void DrawMessageList();
 
 private:
 	static void RecvLoop(ChatRoomMessenger* _this);
@@ -22,5 +27,8 @@ private:
 	sockaddr_in m_serverAddress;
 
 	std::thread m_recvLoop;
+
+	std::list<std::string> m_messageList;
+	std::mutex m_msgListMutex;
 };
 

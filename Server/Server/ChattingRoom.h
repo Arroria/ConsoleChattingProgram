@@ -4,6 +4,7 @@
 #include <mutex>
 #include "../../arSocket.h"
 
+
 struct User
 {
 	SOCKET socket;
@@ -34,6 +35,7 @@ public:
 };
 
 
+class ChattingServer;
 class ChatRoom
 {
 public:
@@ -42,11 +44,15 @@ public:
 
 
 public:
-	bool Join(User newUser);
-	void Quit(const ChatRoomParticipant& user);
+	int Join(User newUser);
+	int Quit(const ChatRoomParticipant& user);
 	void Broadcast(const ChatRoomParticipant& broadcaster, const char* message, int msgLength);
 
+	//void Shutdown();
+
 private:
+	ChattingServer* m_server;
+
 	std::list<ChatRoomParticipant> m_userList;
 	std::mutex m_userListMutex;
 };

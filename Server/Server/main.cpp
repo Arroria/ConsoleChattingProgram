@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include "ChattingServer.h"
 #include "ChattingRoom.h"
 
 
@@ -35,7 +36,14 @@ void main()
 
 
 
-	ChatRoom chattingRoom;
+	ChattingServer chatServer;
+	chatServer.CreateRoom();
+	chatServer.CreateRoom();
+	chatServer.CreateRoom();
+	chatServer.CreateRoom();
+	chatServer.CreateRoom();
+	
+	bool temp = true;
 	while (true)
 	{
 		User user;
@@ -44,7 +52,14 @@ void main()
 		if (__ar_accept(&socErr, g_socket, &clientSocket, (sockaddr*)&clientAddress))
 			ErrorReturn(socErr, "listen()");
 
-		chattingRoom.Join(user);
+		char buffer[1 << 16] = { NULL };
+		int result = recv(clientSocket, buffer, sizeof(buffer), NULL);
+		if (result > 0)
+		{
+			chatServer[atoi(buffer)].Join(user);
+		}
+		else
+			closesocket(clientSocket);
 	}
 
 

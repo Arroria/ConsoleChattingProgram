@@ -4,3 +4,7 @@ using std::cin;
 using std::cout;
 using std::wcout;
 using std::endl;
+
+
+
+void gotoxy(int x, int y);
