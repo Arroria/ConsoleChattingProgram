@@ -26,17 +26,12 @@ bool __ar_connect(SocketError* errorReturn, SOCKET sock, const sockaddr* socketA
 class SocketBuffer
 {
 public:
-	using Length = size_t;
+	using Length = int32_t;
 	static constexpr size_t socketSize = 0xffff;
 	static constexpr size_t lengthSize = sizeof(Length);
 	static constexpr size_t bufferSize = socketSize - lengthSize;
-#ifdef _WIN64
-	static constexpr auto hton = htonll;
-	static constexpr auto ntoh = ntohll;
-#else
 	static constexpr auto hton = htonl;
 	static constexpr auto ntoh = ntohl;
-#endif
 
 public:
 	SocketBuffer();

@@ -16,6 +16,10 @@
     </ClInclude>
     <ClInclude Include="ChattingRoom.h" />
     <ClInclude Include="ChattingServer.h" />
+    <ClInclude Include="ServerUser.h" />
+    <ClInclude Include="..\..\Protocol.h">
+      <Filter>_arSocket</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -23,6 +27,10 @@
     <ClCompile Include="ChattingRoom.cpp" />
     <ClCompile Include="ChattingServer.cpp" />
     <ClCompile Include="..\..\arSocket.cpp">
+      <Filter>_arSocket</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerUser.cpp" />
+    <ClCompile Include="..\..\Protocol.cpp">
       <Filter>_arSocket</Filter>
     </ClCompile>
   </ItemGroup>

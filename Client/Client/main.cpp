@@ -31,6 +31,31 @@ void main()
 
 
 
+	SocketBuffer sockBuff;
+	int result = NULL;
+	if ((result = __ar_recv(g_socket, sockBuff)) <= 0)
+		cout << "error" << endl;
+	else
+	{
+		if (!strncmp(sockBuff.Buffer(), "-roomlist", 9))
+		{
+			using RoomNumber_t = int32_t;
+
+			int roomCnt = (result - 10) / sizeof(RoomNumber_t);
+			RoomNumber_t* currBuff = (RoomNumber_t*)(&sockBuff[10]);
+			for (size_t count = 0; count < roomCnt; count++)
+			{
+				cout << ntohl(*currBuff) << endl;
+				currBuff++;
+			}
+		}
+		else
+			cout << "roomlist 이거 없대" << endl;
+	}
+	
+
+
+	/*
 	cout << "Room Number : ";
 	ChatRoomMessenger crmng;
 	crmng.ConnectRoom(g_socket, g_serverAddress);
@@ -49,10 +74,12 @@ void main()
 		crmng.DrawMessageList();
 		gotoxy(0, 11);
 	}
+	*/
 
 
 
-	Sleep(3000);
+	cout << "sleep" << endl;
+	Sleep(5000);
 
 	closesocket(g_socket);
 	WSACleanup();

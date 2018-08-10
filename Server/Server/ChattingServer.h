@@ -2,10 +2,12 @@
 #include <mutex>
 #include <vector>
 
+#include "ServerUser.h"
+
 class ChatRoom;
 class ChattingServer
 {
-	static constexpr size_t ChatRoomListSize = 1000;
+	static constexpr size_t chatRoomListSize = 100;
 
 public:
 	ChattingServer();
@@ -17,6 +19,11 @@ public:
 public:
 	int CreateRoom(int roomID = -1);
 	void DestroyRoom(int roomID);
+
+
+
+public:
+	bool SendRoomList(User& user);
 
 
 private:

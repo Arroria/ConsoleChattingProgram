@@ -4,20 +4,8 @@
 #include <mutex>
 #include "../../arSocket.h"
 
+#include "ServerUser.h"
 
-struct User
-{
-	SOCKET socket;
-	sockaddr_in address;
-
-	bool operator==(const User& ant) const
-	{
-		return
-			//	address.sin_port == ant.address.sin_port &&
-			//	memcmp(&address.sin_addr, &ant.address.sin_addr, sizeof(in_addr));
-			socket == ant.socket;
-	}
-};
 
 
 class ChatRoom;
@@ -50,10 +38,27 @@ public:
 
 	//void Shutdown();
 
+
+
+
+
+
 private:
 	ChattingServer* m_server;
 
 	std::list<ChatRoomParticipant> m_userList;
 	std::mutex m_userListMutex;
+
+
+
+public:
+	using RoomNumber_t = int32_t;
+
+public:
+	RoomNumber_t RoomNumber() { return m_roomNumber; }
+
+private:
+	RoomNumber_t m_roomNumber;
+
 };
 

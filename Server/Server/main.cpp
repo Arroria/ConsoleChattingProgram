@@ -37,13 +37,18 @@ void main()
 
 
 	ChattingServer chatServer;
-	chatServer.CreateRoom();
-	chatServer.CreateRoom();
-	chatServer.CreateRoom();
-	chatServer.CreateRoom();
-	chatServer.CreateRoom();
-	
-	bool temp = true;
+	chatServer.CreateRoom(1);
+	chatServer.CreateRoom(5);
+	chatServer.CreateRoom(3);
+	chatServer.CreateRoom(2);
+	chatServer.CreateRoom(4);
+
+	chatServer.CreateRoom(63);
+	chatServer.CreateRoom(52);
+	chatServer.CreateRoom(57);
+	chatServer.CreateRoom(36);
+	chatServer.CreateRoom(67);
+
 	while (true)
 	{
 		User user;
@@ -52,14 +57,8 @@ void main()
 		if (__ar_accept(&socErr, g_socket, &clientSocket, (sockaddr*)&clientAddress))
 			ErrorReturn(socErr, "listen()");
 
-		char buffer[1 << 16] = { NULL };
-		int result = recv(clientSocket, buffer, sizeof(buffer), NULL);
-		if (result > 0)
-		{
-			chatServer[atoi(buffer)].Join(user);
-		}
-		else
-			closesocket(clientSocket);
+		chatServer.SendRoomList(user);
+		Sleep(1000);
 	}
 
 

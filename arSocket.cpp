@@ -201,11 +201,11 @@ SocketBuffer::SocketBuffer(const char * data, Length dataLength)
 	memcpy(m_buffer, data, dataLength);
 }
 
-inline void SocketBuffer::SetDataLength(Length dataLength) { m_dataLength = hton(dataLength + lengthSize); }
-inline char* SocketBuffer::Buffer() { return m_buffer; }
-inline char& SocketBuffer::operator[](Length index) { return m_buffer[index]; }
+void SocketBuffer::SetDataLength(Length dataLength) { m_dataLength = hton(dataLength + lengthSize); }
+char* SocketBuffer::Buffer() { return m_buffer; }
+char& SocketBuffer::operator[](Length index) { return m_buffer[index]; }
 
-inline SocketBuffer::Length SocketBuffer::GetDataLength() const { return ntoh(m_dataLength) - lengthSize; }
+SocketBuffer::Length SocketBuffer::GetDataLength() const { return ntoh(m_dataLength) - lengthSize; }
 const char * SocketBuffer::Buffer() const { return m_buffer; }
 const char & SocketBuffer::operator[](Length index) const { return m_buffer[index]; }
 
