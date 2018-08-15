@@ -27,7 +27,12 @@ bool ChatRoomMessenger::Send(const SocketBuffer& sockBuff)
 bool ChatRoomMessenger::DisconnectRoom()
 {
 	m_recvLoop.detach();
-	Send(SocketBuffer("-q", 2));
+	SocketBuffer temp;
+	temp.DataLength(2);
+	char* tempBuff = temp.Buffer();
+	tempBuff[0] = '-';
+	tempBuff[1] = 'q';
+	Send(temp);
 	return false;
 }
 

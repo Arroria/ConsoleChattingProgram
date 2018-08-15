@@ -15,6 +15,15 @@
       <Filter>_arSocket</Filter>
     </ClInclude>
     <ClInclude Include="ChatRoomMessenger.h" />
+    <ClInclude Include="..\..\arJSON.h">
+      <Filter>_arSocket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\arSocket.inl">
+      <Filter>_arSocket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\arJSON.inl">
+      <Filter>_arSocket</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -23,5 +32,8 @@
       <Filter>_arSocket</Filter>
     </ClCompile>
     <ClCompile Include="ChatRoomMessenger.cpp" />
+    <ClCompile Include="..\..\arJSON.cpp">
+      <Filter>_arSocket</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

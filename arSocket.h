@@ -26,31 +26,33 @@ bool __ar_connect(SocketError* errorReturn, SOCKET sock, const sockaddr* socketA
 class SocketBuffer
 {
 public:
-	using Length = int32_t;
+	using Length_t = int32_t;
 	static constexpr size_t socketSize = 0xffff;
-	static constexpr size_t lengthSize = sizeof(Length);
+	static constexpr size_t lengthSize = sizeof(Length_t);
 	static constexpr size_t bufferSize = socketSize - lengthSize;
-	static constexpr auto hton = htonl;
-	static constexpr auto ntoh = ntohl;
+	static constexpr auto LengthToN = htonl;
+	static constexpr auto LengthToH = ntohl;
 
 public:
 	SocketBuffer();
-	SocketBuffer(const char* data, Length dataLength);
 
-	void SetDataLength(Length dataLength);
-	char* Buffer();
-	char& operator[](Length index);
+	inline void DataLength(Length_t dataLength);
+	inline char* Buffer();
+	inline char* At(int index);
+	inline char& operator[](int index);
 	
-	Length GetDataLength() const;
-	const char* Buffer() const;
-	const char& operator[](Length index) const;
+	inline Length_t DataLength() const;
+	inline const char* Buffer() const;
+	inline const char* At(int index) const;
+	inline const char& operator[](int index) const;
 	
 	friend int __ar_send(SOCKET socket, const SocketBuffer& data, int flags);
 
 private:
-	long m_dataLength;
-	char m_buffer[bufferSize];
+	char m_buffer[socketSize];
 };
+#include "arSocket.inl"
 
 int __ar_send(SOCKET socket, const SocketBuffer& socketBuffer, int flags = NULL);
 int __ar_recv(SOCKET socket, SocketBuffer& socketBuffer, int flags = NULL);
+

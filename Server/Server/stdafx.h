@@ -8,3 +8,4 @@ using std::endl;
 extern std::mutex g_coutMutex;
 
 #include "../../arSocket.h"
+#include "../../arJSON.h"

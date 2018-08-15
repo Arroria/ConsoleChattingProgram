@@ -69,16 +69,15 @@ void ChattingServer::DestroyRoom(int roomID)
 
 
 #include "../../arSocket.h"
+#include <string>
 bool ChattingServer::SendRoomList(User & user)
 {
 	using RoomNumber_t = ChatRoom::RoomNumber_t;
 
-	SocketBuffer sockBuff;
 
-	strcpy(sockBuff.Buffer(), "-roomlist");
-	RoomNumber_t* currentBuffer = (RoomNumber_t*)(&sockBuff[10]);
-
-	int roomCount = 0;
+	arJSON json;
+	arJSONValue& roomList = json["RoomList"];
+	
 	m_roomListMutex.lock();
 	for (RoomNumber_t number = 0; number < chatRoomListSize; number++)
 	{
@@ -86,15 +85,21 @@ bool ChattingServer::SendRoomList(User & user)
 		if (!room)
 			continue;
 
-		*currentBuffer = htonl(number);
-		currentBuffer++;
-		roomCount++;
+		arJSON jsonRoom;
+		jsonRoom["id"] = number;
+		roomList.Append(jsonRoom);
 	}
 	m_roomListMutex.unlock();
 
-	sockBuff.SetDataLength(10 + roomCount * sizeof(RoomNumber_t));
 
 
+	std::string jsonStr;
+	json.ToJSON(jsonStr);
+
+	SocketBuffer sockBuff;
+	strcpy(sockBuff.Buffer(), jsonStr.data());
+	sockBuff.DataLength(jsonStr.size());
+	const char* temp = sockBuff.Buffer();
 	__ar_send(user.socket, sockBuff);
 	return false;
 }

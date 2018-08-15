@@ -17,7 +17,7 @@
     <ClInclude Include="ChattingRoom.h" />
     <ClInclude Include="ChattingServer.h" />
     <ClInclude Include="ServerUser.h" />
-    <ClInclude Include="..\..\Protocol.h">
+    <ClInclude Include="..\..\arJSON.h">
       <Filter>_arSocket</Filter>
     </ClInclude>
   </ItemGroup>
@@ -30,8 +30,16 @@
       <Filter>_arSocket</Filter>
     </ClCompile>
     <ClCompile Include="ServerUser.cpp" />
-    <ClCompile Include="..\..\Protocol.cpp">
+    <ClCompile Include="..\..\arJSON.cpp">
       <Filter>_arSocket</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\arSocket.inl">
+      <Filter>_arSocket</Filter>
+    </None>
+    <None Include="..\..\arJSON.inl">
+      <Filter>_arSocket</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "../../arSocket.h"
 
 #include "ChatRoomMessenger.h"
 
@@ -24,7 +23,7 @@ void main()
 	if (__ar_socket(&socErr, AF_INET, SOCK_STREAM, NULL, &g_socket))
 		ErrorReturn(socErr, "socket()");
 
-	__ar_make_sockaddrin(AF_INET, inet_addr("222.108.204.37"), htons(8888), &g_serverAddress);
+	__ar_make_sockaddrin(AF_INET, htonl(INADDR_LOOPBACK), htons(8888), &g_serverAddress);
 
 	if (__ar_connect(&socErr, g_socket, (sockaddr*)&g_serverAddress))
 		ErrorReturn(socErr, "connect()");
@@ -37,20 +36,12 @@ void main()
 		cout << "error" << endl;
 	else
 	{
-		if (!strncmp(sockBuff.Buffer(), "-roomlist", 9))
-		{
-			using RoomNumber_t = int32_t;
+		sockBuff[result] = NULL;
+		arJSON jsonRoot;
+		JSON_To_arJSON(sockBuff.Buffer(), jsonRoot);
 
-			int roomCnt = (result - 10) / sizeof(RoomNumber_t);
-			RoomNumber_t* currBuff = (RoomNumber_t*)(&sockBuff[10]);
-			for (size_t count = 0; count < roomCnt; count++)
-			{
-				cout << ntohl(*currBuff) << endl;
-				currBuff++;
-			}
-		}
-		else
-			cout << "roomlist 이거 없대" << endl;
+		for (auto room : jsonRoot["RoomList"])
+			cout << "Room : " << room["id"].Int() << endl;
 	}
 	
 
