@@ -14,6 +14,7 @@ class arJSON
 public:
 	inline arJSONValue &		operator[](const std::string& key);
 	inline const arJSONValue &	operator[](const std::string& key) const;
+	inline bool					IsIn(const std::string& key) const;
 
 	inline auto	begin();
 	inline auto	end();

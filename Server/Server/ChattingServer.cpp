@@ -76,7 +76,7 @@ bool ChattingServer::SendRoomList(User & user)
 
 
 	arJSON json;
-	arJSONValue& roomList = json["RoomList"];
+	arJSONValue& roomList = json["Room"];
 	
 	m_roomListMutex.lock();
 	for (RoomNumber_t number = 0; number < chatRoomListSize; number++)

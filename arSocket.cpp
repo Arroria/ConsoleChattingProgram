@@ -195,6 +195,10 @@ bool __ar_connect(SocketError* errorReturn, SOCKET sock, const sockaddr* socketA
 
 
 
+SocketBuffer::SocketBuffer() : m_buffer{ NULL } {}
+
+
+
 
 int __ar_send(SOCKET socket, const SocketBuffer& socketBuffer, int flags)
 {
@@ -222,4 +226,10 @@ int __ar_recv(SOCKET socket, SocketBuffer& socketBuffer, int flags)
 
 
 
-SocketBuffer::SocketBuffer() : m_buffer{ NULL } {}
+
+void SetSocketBuffer(const std::string & data, OUT SocketBuffer& socketBuffer)
+{
+	strcpy(socketBuffer.Buffer(), data.data());
+	socketBuffer[data.size()] = NULL;
+	socketBuffer.DataLength(data.size());
+}

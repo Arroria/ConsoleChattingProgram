@@ -120,7 +120,10 @@
     <ClInclude Include="..\..\arJSON.h" />
     <ClInclude Include="..\..\arSocket.h" />
     <ClInclude Include="ChatRoomMessenger.h" />
+    <ClInclude Include="scene.h" />
+    <ClInclude Include="scn_login.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="UserCommand.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\arJSON.cpp">
@@ -132,8 +135,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ChatRoomMessenger.cpp" />
+    <ClCompile Include="scene.cpp" />
+    <ClCompile Include="scn_login.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="UserCommand.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\arJSON.inl">

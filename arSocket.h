@@ -56,3 +56,7 @@ private:
 int __ar_send(SOCKET socket, const SocketBuffer& socketBuffer, int flags = NULL);
 int __ar_recv(SOCKET socket, SocketBuffer& socketBuffer, int flags = NULL);
 
+
+
+#include <string>
+void SetSocketBuffer(const std::string& data, OUT SocketBuffer& socketBuffer);

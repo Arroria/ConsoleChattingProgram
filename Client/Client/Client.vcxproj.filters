@@ -8,6 +8,12 @@
     <Filter Include="_arSocket">
       <UniqueIdentifier>{8a1d3858-a4d1-4baa-887c-48915ad432cc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="scene">
+      <UniqueIdentifier>{6a6431aa-12ec-4a32-82ef-fa6afa7852c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scene\vir">
+      <UniqueIdentifier>{3fd18a42-e3a9-4a1b-bb32-4b77c506672f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -24,6 +30,13 @@
     <ClInclude Include="..\..\arJSON.inl">
       <Filter>_arSocket</Filter>
     </ClInclude>
+    <ClInclude Include="scene.h">
+      <Filter>scene\vir</Filter>
+    </ClInclude>
+    <ClInclude Include="scn_login.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="UserCommand.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -35,5 +48,12 @@
     <ClCompile Include="..\..\arJSON.cpp">
       <Filter>_arSocket</Filter>
     </ClCompile>
+    <ClCompile Include="scene.cpp">
+      <Filter>scene\vir</Filter>
+    </ClCompile>
+    <ClCompile Include="scn_login.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="UserCommand.cpp" />
   </ItemGroup>
 </Project>

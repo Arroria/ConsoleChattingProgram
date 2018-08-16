@@ -3,6 +3,7 @@
 
 inline arJSONValue &		arJSON::operator[](const std::string& key) { return m_json[key]; }
 inline const arJSONValue &	arJSON::operator[](const std::string& key) const { return m_json.at(key); }
+inline bool					arJSON::IsIn(const std::string& key) const { return m_json.find(key) != m_json.end(); }
 
 inline auto	arJSON::begin() { return m_json.begin(); }
 inline auto	arJSON::end() { return m_json.end(); }

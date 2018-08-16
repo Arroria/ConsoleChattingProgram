@@ -2,6 +2,8 @@
 
 #include "ChatRoomMessenger.h"
 
+#include "scn_login.h"
+
 SOCKET g_socket;
 sockaddr_in g_serverAddress;
 
@@ -30,6 +32,18 @@ void main()
 
 
 
+
+	scn_login scn;
+	arJSON result = scn.UpdateLoop(g_socket);
+
+	std::string str;
+	result.ToJSON(str);
+	cout << str << endl;
+	int a = 5;
+
+
+
+/*
 	SocketBuffer sockBuff;
 	int result = NULL;
 	if ((result = __ar_recv(g_socket, sockBuff)) <= 0)
@@ -40,10 +54,11 @@ void main()
 		arJSON jsonRoot;
 		JSON_To_arJSON(sockBuff.Buffer(), jsonRoot);
 
-		for (auto room : jsonRoot["RoomList"])
+		if ()
+		for (auto room : jsonRoot["Room"])
 			cout << "Room : " << room["id"].Int() << endl;
 	}
-	
+	*/
 
 
 	/*
