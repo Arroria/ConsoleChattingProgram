@@ -36,7 +36,7 @@
     <ClInclude Include="scn_login.h">
       <Filter>scene</Filter>
     </ClInclude>
-    <ClInclude Include="UserCommand.h" />
+    <ClInclude Include="CmdTokener.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -54,6 +54,6 @@
     <ClCompile Include="scn_login.cpp">
       <Filter>scene</Filter>
     </ClCompile>
-    <ClCompile Include="UserCommand.cpp" />
+    <ClCompile Include="CmdTokener.cpp" />
   </ItemGroup>
 </Project>

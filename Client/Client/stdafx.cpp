@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+std::mutex g_coutMutex;
+
 #include <Windows.h>
 void gotoxy(int x, int y)
 {

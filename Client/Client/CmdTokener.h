@@ -1,9 +1,9 @@
 #pragma once
 #include <string>
-class UserCommand
+class CmdTokener
 {
 public:
-	UserCommand(const std::string& command);
+	CmdTokener(const std::string& command);
 
 public:
 	std::string NextToken();

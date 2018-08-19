@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "UserCommand.h"
+#include "CmdTokener.h"
 
 
-UserCommand::UserCommand(const std::string & command)
+CmdTokener::CmdTokener(const std::string & command)
 	: m_command(command)
 	, m_cmdIter(m_command.begin())
 {
@@ -10,7 +10,7 @@ UserCommand::UserCommand(const std::string & command)
 
 
 
-std::string UserCommand::NextToken()
+std::string CmdTokener::NextToken()
 {
 	std::string token;
 	while (m_cmdIter != m_command.end())

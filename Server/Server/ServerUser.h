@@ -1,5 +1,4 @@
 #pragma once
-#include <thread>
 #include "../../arSocket.h"
 
 struct User
@@ -14,4 +13,6 @@ struct User
 			//	memcmp(&address.sin_addr, &ant.address.sin_addr, sizeof(in_addr));
 			socket == ant.socket;
 	}
+
+	inline bool operator<(const User& ant) const { return socket < ant.socket; }
 };

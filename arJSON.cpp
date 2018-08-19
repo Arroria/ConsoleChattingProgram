@@ -275,6 +275,14 @@ bool arJSON::ToJSON(OUT std::string & jsonStr) const
 	return false;
 }
 
+std::string arJSON::ToJSON() const
+{
+	std::string str;
+	if (ToJSON(str))
+		return std::string();
+	return str;
+}
+
 
 
 

@@ -19,11 +19,13 @@ inline void arJSONValue::operator=(const std::string& value){ m_type = Type_t::_
 inline void arJSONValue::operator=(const arJSON& value)		{ m_type = Type_t::_sub;		m_sub	= value; }
 inline void arJSONValue::Append(const arJSON& value)		{ m_type = Type_t::_arr;		m_arr.push_back(value); }
 
+inline std::string&	arJSONValue::Str()	{ return m_str; }
+inline arJSON&		arJSONValue::Sub()	{ return m_sub; }
 
 inline arJSONValue::Type_t	arJSONValue::Type() const	{ return m_type; }
 inline int					arJSONValue::Int() const	{ return m_int; }
 inline float				arJSONValue::Float() const	{ return m_float; }
-inline std::string			arJSONValue::Str() const	{ return m_str; }
+inline const std::string&	arJSONValue::Str() const	{ return m_str; }
 
 inline const arJSON&		arJSONValue::Sub() const								{ return m_sub; }
 inline const arJSONValue&	arJSONValue::operator[](const std::string& key) const	{ return m_sub[key]; }

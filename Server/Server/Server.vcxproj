@@ -122,7 +122,11 @@
     <ClInclude Include="ChattingRoom.h" />
     <ClInclude Include="ChattingServer.h" />
     <ClInclude Include="ServerUser.h" />
+    <ClInclude Include="Singleton.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="UM_Lobby.h" />
+    <ClInclude Include="UM_Login.h" />
+    <ClInclude Include="UM_Room.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\arJSON.cpp">
@@ -137,10 +141,14 @@
     <ClCompile Include="ChattingServer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ServerUser.cpp" />
+    <ClCompile Include="Singleton.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="UM_Lobby.cpp" />
+    <ClCompile Include="UM_Login.cpp" />
+    <ClCompile Include="UM_Room.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\arJSON.inl">

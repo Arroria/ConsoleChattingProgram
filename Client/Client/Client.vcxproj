@@ -123,7 +123,7 @@
     <ClInclude Include="scene.h" />
     <ClInclude Include="scn_login.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="UserCommand.h" />
+    <ClInclude Include="CmdTokener.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\arJSON.cpp">
@@ -139,7 +139,7 @@
     <ClCompile Include="scn_login.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="UserCommand.cpp" />
+    <ClCompile Include="CmdTokener.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\arJSON.inl">

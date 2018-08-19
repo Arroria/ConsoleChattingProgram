@@ -22,6 +22,7 @@ public:
 	inline auto	end() const;
 
 	bool ToJSON(OUT std::string& jsonStr) const;
+	std::string ToJSON() const;
 
 private:
 	std::map<arJSONKey, arJSONValue> m_json;
@@ -51,10 +52,14 @@ public:
 	inline void Append(const arJSON& value);
 
 
-	inline Type_t		Type() const;
-	inline int			Int() const;
-	inline float		Float() const;
-	inline std::string	Str() const;
+	inline std::string&	Str();
+	inline arJSON&		Sub();
+
+
+	inline Type_t				Type() const;
+	inline int					Int() const;
+	inline float				Float() const;
+	inline const std::string&	Str() const;
 
 	inline const arJSON&		Sub() const;
 	inline const arJSONValue&	operator[](const std::string& key) const;

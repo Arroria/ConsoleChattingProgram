@@ -8,6 +8,9 @@
     <Filter Include="_arSocket">
       <UniqueIdentifier>{51ca980e-6760-433d-839c-5edd1609ec40}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UM">
+      <UniqueIdentifier>{440c7c23-d6db-4919-a015-19d52bef22bc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -19,6 +22,17 @@
     <ClInclude Include="ServerUser.h" />
     <ClInclude Include="..\..\arJSON.h">
       <Filter>_arSocket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\arJSON.inl" />
+    <ClInclude Include="Singleton.h" />
+    <ClInclude Include="UM_Lobby.h">
+      <Filter>UM</Filter>
+    </ClInclude>
+    <ClInclude Include="UM_Login.h">
+      <Filter>UM</Filter>
+    </ClInclude>
+    <ClInclude Include="UM_Room.h">
+      <Filter>UM</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -33,12 +47,19 @@
     <ClCompile Include="..\..\arJSON.cpp">
       <Filter>_arSocket</Filter>
     </ClCompile>
+    <ClCompile Include="Singleton.cpp" />
+    <ClCompile Include="UM_Lobby.cpp">
+      <Filter>UM</Filter>
+    </ClCompile>
+    <ClCompile Include="UM_Login.cpp">
+      <Filter>UM</Filter>
+    </ClCompile>
+    <ClCompile Include="UM_Room.cpp">
+      <Filter>UM</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\arSocket.inl">
-      <Filter>_arSocket</Filter>
-    </None>
-    <None Include="..\..\arJSON.inl">
       <Filter>_arSocket</Filter>
     </None>
   </ItemGroup>

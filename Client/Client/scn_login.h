@@ -13,38 +13,27 @@ public:
 public:
 	arJSON UpdateLoop(SOCKET mySocket);
 
-private:
-	static void RecvLoop(scn_login& scene, SOCKET mySocket);
-
-	void Send_Register(const std::string& id, const std::string& password);
-	void Send_Login(const std::string& id, const std::string& password);
-	void Send_Quit();
-
-	void Action_Register();
-	void Action_Login();
-	void Action_Quit();
-
 	inline void ReturnGetted()
 	{
-		m_returnGetMutex.lock();
+		std::lock_guard<std::mutex> locker(m_returnGetMutex);
 		m_returnGet = true;
-		m_returnGetMutex.unlock();
 	}
 	inline void WaitReturnGet()
 	{
 		while (true)
 		{
-			m_returnGetMutex.lock();
+			std::lock_guard<std::mutex> locker(m_returnGetMutex);
 			if (m_returnGet)
 			{
 				m_returnGet = false;
-				m_returnGetMutex.unlock();
 				break;
 			}
-			else
-				m_returnGetMutex.unlock();
 		}
 	}
+
+private:
+	static void RecvLoop(scn_login& scene, SOCKET mySocket);
+
 	inline void SceneExpired()
 	{
 		m_scnExpiredMutex.lock();
