@@ -12,6 +12,8 @@ class arJSONValue;
 class arJSON
 {
 public:
+	inline arJSON & operator=(const std::string& jsonStr);
+
 	inline arJSONValue &		operator[](const std::string& key);
 	inline const arJSONValue &	operator[](const std::string& key) const;
 	inline bool					IsIn(const std::string& key) const;
@@ -27,6 +29,7 @@ public:
 private:
 	std::map<arJSONKey, arJSONValue> m_json;
 };
+bool JSON_To_arJSON(const std::string& jsonStr, OUT arJSON& json);
 
 
 class arJSONValue
@@ -82,7 +85,3 @@ private:
 	std::vector<arJSON> m_arr;
 };
 #include "arJSON.inl"
-
-
-
-bool JSON_To_arJSON(const std::string& jsonStr, OUT arJSON& json);

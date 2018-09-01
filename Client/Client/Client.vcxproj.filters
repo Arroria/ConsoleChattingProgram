@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="리소스 파일">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="_arSocket">
       <UniqueIdentifier>{8a1d3858-a4d1-4baa-887c-48915ad432cc}</UniqueIdentifier>
     </Filter>
@@ -37,6 +33,24 @@
       <Filter>scene</Filter>
     </ClInclude>
     <ClInclude Include="CmdTokener.h" />
+    <ClInclude Include="scn_lobby.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton.h" />
+    <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="..\..\JSON_Based_Socket.h">
+      <Filter>_arSocket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\AsyncConnector.h">
+      <Filter>_arSocket</Filter>
+    </ClInclude>
+    <ClInclude Include="Blocker.h" />
+    <ClInclude Include="..\..\SocketReciver.h">
+      <Filter>_arSocket</Filter>
+    </ClInclude>
+    <ClInclude Include="scn_room.h">
+      <Filter>scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -55,5 +69,23 @@
       <Filter>scene</Filter>
     </ClCompile>
     <ClCompile Include="CmdTokener.cpp" />
+    <ClCompile Include="scn_lobby.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Singleton.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="..\..\JSON_Based_Socket.cpp">
+      <Filter>_arSocket</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\AsyncConnector.cpp">
+      <Filter>_arSocket</Filter>
+    </ClCompile>
+    <ClCompile Include="Blocker.cpp" />
+    <ClCompile Include="..\..\SocketReciver.cpp">
+      <Filter>_arSocket</Filter>
+    </ClCompile>
+    <ClCompile Include="scn_room.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,6 +1,8 @@
 #pragma once
 #include "arJSON.h"
 
+inline arJSON & arJSON::operator=(const std::string& jsonStr) { JSON_To_arJSON(jsonStr, *this); return *this; }
+
 inline arJSONValue &		arJSON::operator[](const std::string& key) { return m_json[key]; }
 inline const arJSONValue &	arJSON::operator[](const std::string& key) const { return m_json.at(key); }
 inline bool					arJSON::IsIn(const std::string& key) const { return m_json.find(key) != m_json.end(); }

@@ -2,10 +2,9 @@
 
 #include "ChatRoomMessenger.h"
 
+#include "SceneManager.h"
 #include "scn_login.h"
 
-SOCKET g_socket;
-sockaddr_in g_serverAddress;
 
 void ErrorReturn(const SocketError& socErr, const char* errorCaller)
 {
@@ -18,76 +17,35 @@ void main()
 {
 	SocketError socErr;
 
+	SOCKET serverSocket;
+	sockaddr_in serverAddress;
+
 	WSAData wsaData;
 	if (__ar_WSAStartup(&socErr, 0x0202, &wsaData))
 		ErrorReturn(socErr, "WSAStartup()");
 
-	if (__ar_socket(&socErr, AF_INET, SOCK_STREAM, NULL, &g_socket))
+	if (__ar_socket(&socErr, AF_INET, SOCK_STREAM, NULL, &serverSocket))
 		ErrorReturn(socErr, "socket()");
 
-	__ar_make_sockaddrin(AF_INET, htonl(INADDR_LOOPBACK), htons(8888), &g_serverAddress);
+	__ar_make_sockaddrin(AF_INET, htonl(INADDR_LOOPBACK), htons(8888), &serverAddress);
 
-	if (__ar_connect(&socErr, g_socket, (sockaddr*)&g_serverAddress))
+	if (__ar_connect(&socErr, serverSocket, (sockaddr*)&serverAddress))
 		ErrorReturn(socErr, "connect()");
 
 
 
+	SocketReciver* socketRevicer = new SocketReciver(serverSocket, serverAddress);
+	socketRevicer->Run();
 
-	scn_login scn;
-	arJSON result = scn.UpdateLoop(g_socket);
-
-	std::string str;
-	result.ToJSON(str);
-	cout << str << endl;
-	int a = 5;
-
-
-
-/*
-	SocketBuffer sockBuff;
-	int result = NULL;
-	if ((result = __ar_recv(g_socket, sockBuff)) <= 0)
-		cout << "error" << endl;
-	else
-	{
-		sockBuff[result] = NULL;
-		arJSON jsonRoot;
-		JSON_To_arJSON(sockBuff.Buffer(), jsonRoot);
-
-		if ()
-		for (auto room : jsonRoot["Room"])
-			cout << "Room : " << room["id"].Int() << endl;
-	}
-	*/
-
-
-	/*
-	cout << "Room Number : ";
-	ChatRoomMessenger crmng;
-	crmng.ConnectRoom(g_socket, g_serverAddress);
-	while (true)
-	{
-		SocketBuffer buffer;
-		cin.getline(buffer.Buffer(), buffer.bufferSize);
-		if (std::string("-q") == buffer.Buffer())
-		{
-			crmng.DisconnectRoom();
-			break;
-		}
-		
-		crmng.Send(buffer, strlen(buffer));
-		system("cls");
-		crmng.DrawMessageList();
-		gotoxy(0, 11);
-	}
-	*/
+	SingletonInst(SceneManager)->NextScene(new scn_login(serverSocket, socketRevicer));
+	while (!SingletonInst(SceneManager)->Run());
 
 
 
 	cout << "sleep" << endl;
 	Sleep(5000);
 
-	closesocket(g_socket);
+	closesocket(serverSocket);
 	WSACleanup();
 	system("pause");
 }

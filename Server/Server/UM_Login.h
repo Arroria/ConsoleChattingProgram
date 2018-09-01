@@ -1,32 +1,18 @@
 #pragma once
-#include "Singleton.h"
-
-#include "ServerUser.h"
-#include <string>
-#include <map>
-
-#include <thread>
-#include <mutex>
-
 class UM_Login
-	: public Singleton<UM_Login>
 {
 public:
-	UM_Login();
-	~UM_Login();
-
-public:
-	bool Join(const User& user);
-	bool Quit(const User& user);
+	static bool Reciver(AsyncConnector& client, int recvResult, SocketBuffer& socketBuffer);
 
 private:
-	static void RecvLoop(User user);
-
-private:
-	std::map<User, std::thread> m_user;
-	std::mutex m_userMutex;
+	static bool Act_Register(AsyncConnector& user, const arJSON& jsonRoot);
+	static bool Act_Login(AsyncConnector& user, const arJSON& jsonRoot);
+	static bool Act_Quit(AsyncConnector& user);
 };
 
+#include <map>
+#include <string>
+#include "Singleton.h"
 class TestIDDB
 	: public Singleton<TestIDDB>
 {

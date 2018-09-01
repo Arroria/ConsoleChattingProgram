@@ -2,12 +2,16 @@
 #include "scn_login.h"
 
 #include "CmdTokener.h"
+inline void SetNextScene_Lobby(SOCKET mySocket, SocketReciver* reciver);
 
-scn_login::scn_login()
-	: m_mySocket(NULL)
 
-	, m_sceneExpired(false)
-	, m_returnGet(false)
+
+scn_login::scn_login(SOCKET mySocket, SocketReciver* reciver)
+	: m_mySocket(mySocket)
+	, m_reciver(reciver)
+
+	, m_waitRecive(false)
+	, m_endOfScene(false)
 {
 }
 scn_login::~scn_login()
@@ -16,79 +20,115 @@ scn_login::~scn_login()
 
 
 
-void Assay_Register(scn_login& scene, SOCKET mySocket, CmdTokener& cmdTokener);
-void Assay_Login(scn_login& scene, SOCKET mySocket, CmdTokener& cmdTokener);
-void Assay_Quit(scn_login& scene, SOCKET mySocket);
-arJSON scn_login::UpdateLoop(SOCKET mySocket)
+void scn_login::UpdateLoop()
 {
-	m_mySocket = mySocket;
-	m_recvLoop = std::thread(RecvLoop, std::ref(*this), m_mySocket);
-
-
-
-	while (true)
+	while (!m_endOfScene)
 	{
-		if (IsSceneExpired())
-			break;
-
-
-		char buffer[1 << 16] = { NULL };
-		cin.getline(buffer, 1 << 16);
-
-		if (strlen(buffer))
+		if (m_reciver->IsRecived())
 		{
-			if (buffer[0] == '/')
+			Update_Recive();
+			m_reciver->ReciveRestart();
+		}
+		else
+		{
+			if (!m_waitRecive)
 			{
-				CmdTokener cmdTokener(buffer);
-				std::string rootCmd = cmdTokener.NextToken();
-				if (rootCmd == "/register")		Assay_Register(*this, mySocket, cmdTokener);	
-				else if (rootCmd == "/login")	Assay_Login(*this, mySocket, cmdTokener);
-				else if (rootCmd == "/exit")	Assay_Quit(*this, mySocket);
-				else
-				{
-					std::lock_guard<std::mutex> locker(g_coutMutex);
-					cout << "Error : Is not command" << endl;
-				}
-			}
-			else
-			{
-				std::lock_guard<std::mutex> locker(g_coutMutex);
-				cout << "Note : Only command activate." << endl;
+				Update_Send();
 			}
 		}
 	}
+}
 
+void scn_login::Update_Recive()
+{
+	std::lock_guard<SocketReciver> locker(*m_reciver);
+	int recvResult = m_reciver->ReciveResult();
 
-	m_recvLoop.detach();
-	return m_resultJSON;
+	if (recvResult > 0)
+	{
+		arJSON iJSON;
+		{
+			SocketBuffer& data = m_reciver->RecivedData();
+			data[recvResult] = NULL;
+			iJSON = data.Buffer();
+		}
+
+		if (iJSON.IsIn("Message"))
+		{
+			const std::string& msg = iJSON["Message"].Str();
+			if (msg == "Register")		Action_Register(iJSON);
+			else if (msg == "Login")	Action_Login(iJSON);
+			else if (msg == "Quit")		Action_Quit();
+			else
+			{
+				std::lock_guard<std::mutex> locker(g_coutMutex);
+				cout << "Error : Unknown message recieved." << endl;
+			}
+		}
+		else
+		{
+			std::lock_guard<std::mutex> locker(g_coutMutex);
+			cout << "Error : Message do not recieved." << endl;
+		}
+	}
+	else
+	{
+		{
+			std::lock_guard<std::mutex> locker(g_coutMutex);
+			cout << "Error : Server disconnected." << endl;
+		}
+		Action_Quit();
+	}
+}
+
+void scn_login::Update_Send()
+{
+	char buffer[1 << 16] = { NULL };
+	cin.getline(buffer, 1 << 16);
+
+	if (!strlen(buffer))
+		return;
+
+	if (buffer[0] == '/')
+	{
+		CmdTokener cmdTokener(buffer);
+		std::string rootCmd = cmdTokener.NextToken();
+		if (rootCmd == "/register")		Assay_Register(cmdTokener);
+		else if (rootCmd == "/login")	Assay_Login(cmdTokener);
+		else if (rootCmd == "/exit")	Assay_Quit();
+		else
+		{
+			std::lock_guard<std::mutex> locker(g_coutMutex);
+			cout << "Error : Is not command" << endl;
+		}
+	}
+	else
+	{
+		std::lock_guard<std::mutex> locker(g_coutMutex);
+		cout << "Note : Only command activate." << endl;
+	}
 }
 
 
 
-void SendData(SOCKET mySocket, const arJSON& jsonRoot);
-void Assay_Register(scn_login& scene, SOCKET mySocket, CmdTokener& cmdTokener)
+void scn_login::Assay_Register(CmdTokener& cmdTokener)
 {
 	std::string id, password;
 	if ((id = cmdTokener.NextToken()).size() && (password = cmdTokener.NextToken()).size())
 	{
 		arJSON sJsonRoot;
 		sJsonRoot["Message"] = "Register";
-		//arJSON& sJson_Register = sJsonRoot["ID"].Sub();
-		//sJson_Register["ID"] = id;
-		//sJson_Register["password"] = password;
-		
 		arJSON sJson_Register;
 		sJson_Register["ID"] = id;
 		sJson_Register["Password"] = password;
 		sJsonRoot["ID"] = sJson_Register;
-
-		SendData(mySocket, sJsonRoot);
+		__ar_send(m_mySocket, sJsonRoot);
 
 		{
 			std::lock_guard<std::mutex> locker(g_coutMutex);
 			cout << "Note : Register called." << endl;
 		}
-		scene.WaitReturnGet();
+		m_waitRecive = true;
 	}
 	else
 	{
@@ -97,7 +137,7 @@ void Assay_Register(scn_login& scene, SOCKET mySocket, CmdTokener& cmdTokener)
 	}
 }
 
-void Assay_Login(scn_login& scene, SOCKET mySocket, CmdTokener& cmdTokener)
+void scn_login::Assay_Login(CmdTokener& cmdTokener)
 {
 	std::string id, password;
 	if ((id = cmdTokener.NextToken()).size() && (password = cmdTokener.NextToken()).size())
@@ -108,14 +148,13 @@ void Assay_Login(scn_login& scene, SOCKET mySocket, CmdTokener& cmdTokener)
 		sJson_Login["ID"] = id;
 		sJson_Login["Password"] = password;
 		sJsonRoot["ID"] = sJson_Login;
-
-		SendData(mySocket, sJsonRoot);
+		__ar_send(m_mySocket, sJsonRoot);
 
 		{
 			std::lock_guard<std::mutex> locker(g_coutMutex);
 			cout << "Note : Login called." << endl;
 		}
-		scene.WaitReturnGet();
+		m_waitRecive = true;
 	}
 	else
 	{
@@ -123,137 +162,68 @@ void Assay_Login(scn_login& scene, SOCKET mySocket, CmdTokener& cmdTokener)
 		cout << "Error : Need more data" << endl;
 	}
 }
-void Assay_Quit(scn_login& scene, SOCKET mySocket)
+void scn_login::Assay_Quit()
 {
 	arJSON sJsonRoot;
 	sJsonRoot["Message"] = "Quit";
-
-	SendData(mySocket, sJsonRoot);
+	__ar_send(m_mySocket, sJsonRoot);
 
 	{
 		std::lock_guard<std::mutex> locker(g_coutMutex);
 		cout << "Note : Quit called." << endl;
 	}
-	scene.WaitReturnGet();
+	m_waitRecive = true;
 }
 
 
 
-void SendData(SOCKET mySocket, const arJSON & jsonRoot)
+void scn_login::Action_Register(const arJSON & jsonRoot)
 {
-	SocketBuffer socBuf;
-	SetSocketBuffer(jsonRoot.ToJSON(), socBuf);
-	__ar_send(mySocket, socBuf);
-}
-
-
-
-void Action_Register(scn_login& scene, const arJSON& jsonRoot);
-void Action_Login(scn_login& scene, const arJSON& jsonRoot);
-void Action_Quit(scn_login& scene);
-void scn_login::RecvLoop(scn_login& scene, SOCKET mySocket)
-{
-	while (!scene.IsSceneExpired())
+	if (jsonRoot.IsIn("CallResult"))
 	{
-		SocketBuffer sockBuff;
-		int result = __ar_recv(mySocket, sockBuff);
-		if (result > 0)
-		{
-			sockBuff[result] = NULL;
-			arJSON jsonRoot;
-			JSON_To_arJSON(sockBuff.Buffer(), jsonRoot);
-			if (jsonRoot.IsIn("Message"))
-			{
-				const std::string& msg = jsonRoot["Message"].Str();
-				if (msg == "Register")		Action_Register(scene, jsonRoot);
-				else if (msg == "Login")	Action_Login(scene, jsonRoot);
-				else if (msg == "Quit")		Action_Quit(scene);
-				else
-				{
-					std::lock_guard<std::mutex> locker(g_coutMutex);
-					cout << "Error : Unknown message recieved." << endl;
-				}
-			}
-			else
-			{
-				std::lock_guard<std::mutex> locker(g_coutMutex);
-				cout << "Error : Message do not recieved." << endl;
-			}
-		}
+		if (jsonRoot["CallResult"].Int())
+		{ RegionLocker locker(g_coutMutex);	cout << "Note >> scn_Login - Register : Success\n"; }
 		else
-		{
-			{
-				std::lock_guard<std::mutex> locker(g_coutMutex);
-				cout << "Error : Server disconnected." << endl;
-			}
-			Action_Quit(scene);
-		}
-	}
-}
-
-
-
-
-void Action_Register(scn_login & scene, const arJSON & jsonRoot)
-{
-	if (jsonRoot.IsIn("Register"))
-	{
-		if (!jsonRoot["Register"].Int())
-		{
-			std::lock_guard<std::mutex> locker(g_coutMutex);
-			cout << "Note : Register Success." << endl;
-		}
-		else
-		{
-			std::lock_guard<std::mutex> locker(g_coutMutex);
-			cout << "Error : Register Failed." << endl;
-		}
+		{ RegionLocker locker(g_coutMutex);	cout << "Error >> scn_Login - Register : Failed\n"; }
 	}
 	else
-	{
-		std::lock_guard<std::mutex> locker(g_coutMutex);
-		cout << "Error : Register unknown error." << endl;
-	}
-	scene.ReturnGetted();
+		{ RegionLocker locker(g_coutMutex);	cout << "Error >> scn_Login - Register : unknwon return\n"; }
+	m_waitRecive = false;
 }
 
-void Action_Login(scn_login & scene, const arJSON & jsonRoot)
+void scn_login::Action_Login(const arJSON & jsonRoot)
 {
-	if (jsonRoot.IsIn("Login"))
+	if (jsonRoot.IsIn("CallResult"))
 	{
-		if (!jsonRoot["Login"].Int())
+		if (jsonRoot["CallResult"].Int())
 		{
-			/*
-			로그인 아웃플 필요
-			*/
-			{
-				std::lock_guard<std::mutex> locker(g_coutMutex);
-				cout << "Note : Login Success." << endl;
-			}
+			{ RegionLocker locker(g_coutMutex);	cout << "Note >> scn_Login - Login : Success\n"; }
+			SetNextScene_Lobby(m_mySocket, m_reciver);
+			m_endOfScene = true;
 		}
 		else
-		{
-			std::lock_guard<std::mutex> locker(g_coutMutex);
-			cout << "Error : Login Failed." << endl;
-		}
+		{ RegionLocker locker(g_coutMutex);	cout << "Error >> scn_Login - Login : Failed\n"; }
 	}
 	else
-	{
-		std::lock_guard<std::mutex> locker(g_coutMutex);
-		cout << "Error : Login unknown error." << endl;
-	}
-	scene.ReturnGetted();
+		{ RegionLocker locker(g_coutMutex);	cout << "Error >> scn_Login - Login : unknwon return\n"; }
+	m_waitRecive = false;
 }
 
-void Action_Quit(scn_login & scene)
+void scn_login::Action_Quit()
 {
 	{
 		std::lock_guard<std::mutex> locker(g_coutMutex);
 		cout << "Note : Quit Success." << endl;
 	}
-	scene.ReturnGetted();
-	/*
-	종료 처리 필요
-	*/
+	m_endOfScene = true;
+	m_waitRecive = false;
 }
 
+
+
+#include "SceneManager.h"
+#include "scn_lobby.h"
+inline void SetNextScene_Lobby(SOCKET mySocket, SocketReciver* reciver)
+{
+	SingletonInst(SceneManager)->NextScene(new scn_lobby(mySocket, reciver));
+}

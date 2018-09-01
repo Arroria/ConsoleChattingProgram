@@ -1,13 +1,5 @@
 #include "stdafx.h"
 
-#include "ChattingServer.h"
-#include "ChattingRoom.h"
-void TempThread(SOCKET clientSocket);
-
-
-#include "UM_Login.h"
-
-
 SOCKET g_socket;
 sockaddr_in g_socketAddress;
 
@@ -18,6 +10,7 @@ void ErrorReturn(const SocketError& socErr, const char* errorCaller)
 	exit(1);
 }
 
+#include "UM_Login.h"
 void main()
 {
 	SocketError socErr;
@@ -38,31 +31,16 @@ void main()
 		ErrorReturn(socErr, "listen()");
 
 
-
-	ChattingServer chatServer;
-	chatServer.CreateRoom(1);
-	chatServer.CreateRoom(5);
-	chatServer.CreateRoom(3);
-	chatServer.CreateRoom(2);
-	chatServer.CreateRoom(4);
-
-	chatServer.CreateRoom(63);
-	chatServer.CreateRoom(52);
-	chatServer.CreateRoom(57);
-	chatServer.CreateRoom(36);
-	chatServer.CreateRoom(67);
-
-
-
 	while (true)
 	{
-		User user;
-		SOCKET& clientSocket = user.socket;
-		sockaddr_in& clientAddress = user.address;
+		SOCKET clientSocket;
+		sockaddr_in clientAddress;
 		if (__ar_accept(&socErr, g_socket, &clientSocket, (sockaddr*)&clientAddress))
 			ErrorReturn(socErr, "listen()");
-
-		SingletonInst(UM_Login)->Join(user);
+		
+		AsyncConnector* client = ClientRegister(clientSocket, clientAddress);
+		client->Returner(UM_Login::Reciver);
+		client->Run();
 	}
 
 

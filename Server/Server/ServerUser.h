@@ -1,10 +1,12 @@
 #pragma once
 #include "../../arSocket.h"
+#include "../../RecvLoopManagementClass.h"
 
 struct User
 {
 	SOCKET socket;
 	sockaddr_in address;
+	RecvLoopManagementClass recvMng;
 
 	bool operator==(const User& ant) const
 	{

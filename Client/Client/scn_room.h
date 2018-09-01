@@ -2,12 +2,12 @@
 #include "scene.h"
 #include "CmdTokener.h"
 
-class scn_login :
+class scn_room :
 	public Scene
 {
 public:
-	scn_login(SOCKET mySocket, SocketReciver* reciver);
-	~scn_login();
+	scn_room(SOCKET mySocket, SocketReciver* reciver);
+	~scn_room();
 
 public:
 	virtual void UpdateLoop();
@@ -17,12 +17,10 @@ private:
 	void Update_Send();
 
 
-	void Assay_Register(CmdTokener& cmdTokener);
-	void Assay_Login(CmdTokener& cmdTokener);
+	void Assay_Chatting(const std::string& message);
 	void Assay_Quit();
 
-	void Action_Register(const arJSON& jsonRoot);
-	void Action_Login(const arJSON& jsonRoot);
+	void Action_Chatting(const arJSON& jsonRoot);
 	void Action_Quit();
 
 private:
@@ -32,3 +30,4 @@ private:
 	bool m_waitRecive;
 	bool m_endOfScene;
 };
+
